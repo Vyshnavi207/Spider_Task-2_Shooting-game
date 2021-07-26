@@ -40,10 +40,21 @@ function Shooting(x, y, dx){
         this.draw();
     }
 }
-function Spaceship(x, y, dx){
+function Shoots(x, y){
     this.x = x;
     this.y = y;
-    this.dx = dx;
+    this.draw = function(){
+        context.beginPath();
+        context.arc(this.x,this.y, 40, 2 * Math.PI, false);
+        context.fillStyle = "white";
+        context.fill();
+    }
+}
+const shoots = [];
+const shots = new Shoots(920,500);
+function Spaceship(x, y){
+    this.x = x;
+    this.y = y;
     this.draw = function(){
         context.beginPath();
         context.arc(this.x,this.y, 30, 2 * Math.PI, false);
@@ -51,20 +62,21 @@ function Spaceship(x, y, dx){
         context.fill();
     }
 }
-const spaceship = new Spaceship(200, 290, 0);
-const shoots = [];
-const lives = [];
+const spaceship = new Spaceship(200, 290);
 
+const lives = [];
 const elien = [];
 function Elien(){
     setInterval(() =>{
         x = Math.random() + canvas.width;
-        y = Math.random() * canvas.height;
+        y = Math.random() * (canvas.height -140);
         dx = 1;
-        elien.push(new Enemy(x, y, dx));
+        const enemy = new Enemy(x, y, dx);
+        elien.push(enemy);
+        // elien.push(Enemy(x, y, dx));
     }, 1500);
 };
-function life(x, y, dx){
+function life(x, y,dx){
     this.x = x;
     this.y = y;
     this.dx = dx;
@@ -76,26 +88,76 @@ function life(x, y, dx){
     }
 }
 const life1 = new life(30,50,0);
-const life2 = new life(50,50,0);
-const life3 = new life(70,50,0);
-const life4 = new life(90,50,0);
-const life5 = new life(110,50,0);
+//movement
+function move(x, y){
+    this.x = x;
+    this.y = y;
+    this.draw = function(){
+        context.beginPath();
+        context.arc(this.x,this.y, 10, 2 * Math.PI, false);
+        context.fillStyle = "green";
+        context.fill();
+    }
+}
+//stars
+const stars = [];
+// function Movedown(){
+//     setInterval(() =>{
+//         stars.push( new Star(300,100,1));
+//     }, 1500);
+// }
+function Star(x,y,dy){
+    this.x = x;
+    this.y = y;
+    this.dy = dy;
+    this.draw = function(){
+        context.beginPath();
+        context.moveTo(this.x,this.y);
+        context.lineTo(this.x +10,this.y +10);
+        context.strokeStyle = 'white';
+        context.stroke();
+    }
+    this.update = function(){
+        this.y = this.y + this.dy;
+        this.draw();
+    }
+}
+const star = new Star(300, 100,1);
+// console.log(Star);
+function Movedown(){
+    setInterval(() =>{
+        x = Math.random() * canvas.width;
+        y = Math.random() * canvas.height;
+        dy = 1;
+        // const fab = new Star(x, y,1);
+        stars.push( new Star(x, y,dy));
+        // console.log(x);
+    }, 1500);
+};
+
+
 // spaceship.draw(); removed by clearRect so we need to add in animate after clearRect
 let getscore  =  0;
 let animationframe;
 function animate() {
      animationframe = requestAnimationFrame(animate);
-    //  context.fillStyle = "rgba(0,0,0,0.1)";
      context.clearRect(0, 0, canvas.width, canvas.height);//removes previous from canvas
      spaceship.draw();
+     shots.draw();
      life1.draw();
-     life2.draw();
-     life3.draw();
-     life4.draw();
-     life5.draw();
+    //  star.update();
+     //movement
+     context.beginPath();
+     context.arc(97, 486, 70, 2 * Math.PI, false);
+     context.fillStyle = 'grey' ;
+     context.fill();
+     //stars
+     stars.forEach((Star) =>{
+        Star.update();
+    });
      lives.forEach((life) =>{
          life.draw();
-     })
+     });
      shoots.forEach((Shooting) =>{
         Shooting.update();
         
@@ -103,22 +165,23 @@ function animate() {
     //game over
      elien.forEach((Enemy,index) =>{
          Enemy.update();
-         const Xdist = Enemy.x - spaceship.x;
-         if(( Xdist <= 40 )){
+         const Xdist =  Enemy.x - spaceship.x;
+        //  console.log(Xdist);
+         if(( Xdist <= 40 ) && (Enemy.y = spaceship.y)){
             //  alert("Game Over");
              cancelAnimationFrame(animationframe);
              cards.style.display ='block';
              numb.innerHTML = getscore;
-            // console.log(Xdist);
-         };
-
+             cards.style.display = 'flex';
+            
+         }
         shoots.forEach((Shooting,sindex) =>{
             const Xdist = Enemy.x - Shooting.x;
 //remove when object touches
-        if( (Xdist <= 40) ){
+        if( (Xdist <= 40) && (Enemy.y = Shooting.y)){
             getscore = getscore + 100;
             document.getElementById("getscore").innerHTML = getscore;
-            setTimeout(() =>{
+            setTimeout(() =>{       
             elien.splice(index,1);
             shoots.splice(sindex,1);},0);
        
@@ -126,17 +189,41 @@ function animate() {
             // console.log(Xdist);
         })
      });
-
-    //  context.beginPath();
-    //  context.arc(120, 470, 60, 2 * Math.PI, false);
-    //  context.fillStyle = 'grey';
-    //  context.fill();
+    
+     
 }
-addEventListener('click', () =>{
+// addEventListener('click', () =>{
+//     const ball = new Shooting(200, 290, 5);
+//     shoots.push(ball);
+//     // console.log(getdistance(ball.x, ball.y));
+// },false);
+document.getElementById("top").addEventListener('click',()=>{
+    spaceship.y = spaceship.y - 30;
+    spaceship.draw();
+},);
+document.getElementById("left").addEventListener('click',()=>{
+    spaceship.x = spaceship.x - 30;
+    spaceship.draw();
+},);
+document.getElementById("right").addEventListener('click',()=>{
+    spaceship.x = spaceship.x + 30;
+    spaceship.draw();
+},);
+document.getElementById("bottom").addEventListener('click',()=>{
+    spaceship.y = spaceship.y + 30;
+    spaceship.draw();
+},);
+//shooting icon
+document.getElementById("shot").addEventListener('click',() =>{
     const ball = new Shooting(200, 290, 5);
     shoots.push(ball);
-    // console.log(getdistance(ball.x, ball.y));
-},false);
+    shoots.forEach((Shooting) =>{
+        ball.y = spaceship.y;
+        ball.x = spaceship.x;
+        Shooting.draw();
+    });
+});
+
 let timesec=0;
 let timemin=0;
 let timehrs=0;
@@ -150,7 +237,17 @@ startgame.addEventListener('click',() =>{
     timemin=0;
     timehrs=0;
     getscore=0;
-    //levels
+    //lifes 5 min
+    setInterval(() =>{
+        // alert("YOU HAVE GOT ONE LIFE :)");
+        i ++;
+        x = 30+ (20 * i);
+        const lifes = new life(x,50,0);
+        lives.push(lifes);
+        // console.log(x);
+        // console.log(getscore);
+    },300000);
+    //levels 10 min
     setInterval(() => {
         alert("YOU HAVE REACHED NEXT LEVEL :)");
         elien.forEach((Enemy) =>{
@@ -158,20 +255,15 @@ startgame.addEventListener('click',() =>{
             Enemy.update();
             console.log(Enemy.dx); 
         })
-    },1200000);
-    // points
+    },600000);
+    // points 15 min
     setInterval(() => {
-        alert("YOU HAVE WON EXTRA POINTS('1000') + 1 life :)");
+        alert("BONUS POINTS('1000') :)");
         getscore = getscore + 1000;
         document.getElementById("getscore").innerHTML = getscore;
-        //lifes
-        i ++;
-        x = 110 + (20 * i);
-        const lifes = new life(x,50,0);
-        lives.push(lifes);
-        // console.log(x);
-        // console.log(getscore);
+        
     },900000);
+
     setInterval(() => {
         timesec++;
         if((timesec/60) ==1){
@@ -209,7 +301,7 @@ startgame.addEventListener('click',() =>{
     animate();
     Elien();
     // console.log("go");
-},false);
+});
 
 
 

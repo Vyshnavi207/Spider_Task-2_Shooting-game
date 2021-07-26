@@ -62,12 +62,69 @@
             font-size: 20px;
             user-select: none;
         }
-        
+        .top{
+           margin-top: 450px;
+           margin-left: 250px;
+           transform: rotate(90deg);
+    
+        }
+        .left{
+           margin-top: 490px;
+           margin-left: 210px;
+        }
+        .right{
+            margin-top: 490px;
+            margin-left: 290px;
+        }
+        .bottom{
+            margin-top: 530px;
+            margin-left:250px;
+            transform : rotate(90deg);
+        }
+        .top,
+        .left,
+        .right,
+        .bottom{
+            position: fixed;
+            color: black;
+            z-index: 1;
+            width: 50px;
+            height: 50px;
+            background-color: rgba(0,0,0,0.3);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 23px;
+            transition: all 0.4s;
+            user-select: none;
+        }
+        .top:hover,
+        .left:hover,
+        .right:hover,
+        .bottom:hover{
+            background-color: rgba(0,0,0,0.6);
+            cursor: pointer;
+        }
+        .shot{
+            color: black;
+            position: fixed;
+            font-size: 23px;
+            margin-top: 515px;
+            margin-left: 1068px;
+            user-select: none;
+            z-index: 2;
+        }
 
 
     </style>
     <div class="score"><span>Score: </span><span id="getscore">0</span></div>
     <div class="timer"><span>Timer:</span><span id="gettime">00:00:00</span></div>
+    <div class="top" id="top">&#10094</div>
+    <div class="left" id="left">&#10094</div>
+    <div class="right" id="right">&#10095</div>
+    <div class="bottom" id="bottom">&#10095</div>
+    <div class ="shot" id="shot">SHOT</div>
     <div class="scorecard" id="cards">
         <div class="card">
             <main id="numb" class="number">0</main>
