@@ -17,22 +17,32 @@ function Enemy(x, y, dx,radius){
     this.radius = radius;
     this.draw = function(){
         context.beginPath();
-        context.arc(this.x,this.y, this.radius, 2 * Math.PI, false);
-        context.fillStyle = "white";
-        context.fill();
+        // context.arc(this.x,this.y, this.radius, 2 * Math.PI, false);
+        context.arc(this.x, this.y, 30, Math.PI * 2, false); // Outer circle
+        context.moveTo(this.x+12, this.y);
+        context.arc(this.x,this.y -5,12, 2 * Math.PI,false);//eye
+        context.moveTo(this.x+ 20,this.y)
+        context.arc(this.x, this.y,20,0,Math.PI ,false);//mouth
+        context.moveTo(this.x ,this.y -30);
+        context.lineTo(this.x ,this.y-50);
+        context.strokeStyle ='white';
+        context.stroke();
+
+    
     }
     this.update = function(){
         this.x = this.x - this.dx;
         this.draw();
     }
 }
-function Shooting(x, y, dx){
+function Shooting(x, y, dx, radius){
     this.x = x;
     this.y = y;
     this.dx = dx;
+    this.radius = radius;
     this.draw = function(){
         context.beginPath();
-        context.arc(this.x,this.y, 5, 2 * Math.PI, false);
+        context.arc(this.x,this.y, this.radius, 2 * Math.PI, false);
         context.fillStyle = "green";
         context.fill();
     }
@@ -53,18 +63,46 @@ function Shoots(x, y){
 }
 const shoots = [];
 const shots = new Shoots(920,500);
-function Spaceship(x, y,radius){
+function Spaceship(x, y){
     this.x = x;
     this.y = y;
-    this.radius = radius;
     this.draw = function(){
         context.beginPath();
-        context.arc(this.x,this.y, this.radius, 2 * Math.PI, false);
-        context.fillStyle = "red";
-        context.fill();
+        //circle
+        context.arc(this.x + 50,this.y + 27,10,2 * Math.PI, false );
+        context.arc(this.x + 50,this.y + 27,17,2 * Math.PI, false );
+        //spaceship
+        context.moveTo(this.x +135 ,this.y + 30);
+        context.quadraticCurveTo(this.x + (130/2) ,this.y - 15, this.x , this.y + 10);
+        context.moveTo(this.x + 135,this.y + 30);
+        context.quadraticCurveTo(this.x + (130/2), this.y + 70,this.x ,this.y + 40);
+        
+        context.moveTo(this.x , this.y + 10);
+        context.lineTo(this.x ,this.y + 40);
+        context.lineTo(this.x - 15,this.y + 60);
+        context.moveTo(this.x , this.y + 10);
+        context.lineTo(this.x -15,this.y -8);
+        context.moveTo(this.x -15,this.y -8);
+        context.lineTo(this.x - 15,this.y + 60);
+        //front
+        context.moveTo(this.x + 85,this.y + 7);
+        context.lineTo(this.x + 85,this.y + 50);
+        
+        //paddel
+        context.moveTo(this.x +50,this.y +1);
+        context.quadraticCurveTo(this.x + 25,this.y - 50 ,this.x -35, this.y - 30);
+        context.moveTo(this.x +50,this.y +53);
+        context.quadraticCurveTo(this.x + 25 ,this.y +100  ,this.x -35, this.y + 80);
+        context.moveTo(this.x +20,this.y +3);
+        context.quadraticCurveTo(this.x + 20,this.y - 45 ,this.x -35, this.y-30);
+        context.moveTo(this.x +20,this.y + 48);
+        context.quadraticCurveTo(this.x + 20,this.y +100  ,this.x -35, this.y + 80);
+    
+        context.strokeStyle = "white";
+        context.stroke();
     }
 }
-const spaceship = new Spaceship(200, 290,30);
+const spaceship = new Spaceship(200, 290);
 
 const lives = [];
 const elien = [];
@@ -73,9 +111,9 @@ function Elien(){
         x = Math.random() + canvas.width;
         y = Math.random() * (canvas.height -140);
         dx = 1;
-        const enemy = new Enemy(x, y, dx,30);
+        const enemy = new Enemy(x, y, dx,40);
         elien.push(enemy);
-        // elien.push(Enemy(x, y, dx));
+
     }, 1500);
 };
 function life(x, y){
@@ -176,7 +214,7 @@ function animate() {
          Enemy.update();
          const Xdist =  Enemy.x - spaceship.x;
         //  console.log(Xdist);
-         if(( Xdist <= 40 ) && (Enemy.y = spaceship.y)){
+         if(( Xdist <= (Enemy.radius + spaceship.radius) ) && (Enemy.y = spaceship.y)){
             //  alert("Game Over");
              cancelAnimationFrame(animationframe);
              cards.style.display ='block';
@@ -187,7 +225,7 @@ function animate() {
         shoots.forEach((Shooting,sindex) =>{
             const Xdist = Enemy.x - Shooting.x;
 //remove when object touches
-        if( (Xdist <= 40) && (Enemy.y = Shooting.y)){
+        if( (Xdist <= (Enemy.radius + Shooting.radius)) && (Enemy.y = Shooting.y)){
             getscore = getscore + 100;
             document.getElementById("getscore").innerHTML = getscore;
             setTimeout(() =>{       
@@ -220,7 +258,7 @@ document.getElementById("bottom").addEventListener('click',()=>{
 },);
 //shooting icon
 document.getElementById("shot").addEventListener('click',() =>{
-    const ball = new Shooting(200, 290, 5);
+    const ball = new Shooting(1000, 310, 5, 8);
     shoots.push(ball);
     shoots.forEach((Shooting) =>{
         ball.y = spaceship.y;
