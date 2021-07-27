@@ -1,14 +1,20 @@
 This project is a Shooting Game developed in HTML5 and Canvas. 
 Game consists of a Spaceship and Aliens.
 Goal of this game is to protect Spaceship from Aliens in space.
+### Rules:
 To score points shoot the aliens using FIRE button on the button right.
+
 Game levels is calculated using Timer on top right.
+
 If Spaceship survives every minute then new life is added.
+
 If second minute is survided then score goes to next level.
+
 If third minute is survided then 1000 bonus points will be added.
+
 To safeguard your spaceship use control buttons on bottom left corner to move spaceship.
 
-Following are the checklist for game features:
+### Following are the checklist for game features:
 - [x] Users should be able to move the spaceship in all four directions. The
 aliens will be moving in the right to left direction continuously. Once an
 alien collides with the spaceship, it is destroyed.
