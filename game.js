@@ -10,13 +10,14 @@ context.fill();
 const startgame =document.getElementById("startgame");
 const numb = document.getElementById("numb");
 
-function Enemy(x, y, dx){
+function Enemy(x, y, dx,radius){
     this.x = x;
     this.y = y;
     this.dx = dx;
+    this.radius = radius;
     this.draw = function(){
         context.beginPath();
-        context.arc(this.x,this.y, 30, 2 * Math.PI, false);
+        context.arc(this.x,this.y, this.radius, 2 * Math.PI, false);
         context.fillStyle = "white";
         context.fill();
     }
@@ -52,17 +53,18 @@ function Shoots(x, y){
 }
 const shoots = [];
 const shots = new Shoots(920,500);
-function Spaceship(x, y){
+function Spaceship(x, y,radius){
     this.x = x;
     this.y = y;
+    this.radius = radius;
     this.draw = function(){
         context.beginPath();
-        context.arc(this.x,this.y, 30, 2 * Math.PI, false);
+        context.arc(this.x,this.y, this.radius, 2 * Math.PI, false);
         context.fillStyle = "red";
         context.fill();
     }
 }
-const spaceship = new Spaceship(200, 290);
+const spaceship = new Spaceship(200, 290,30);
 
 const lives = [];
 const elien = [];
@@ -71,23 +73,29 @@ function Elien(){
         x = Math.random() + canvas.width;
         y = Math.random() * (canvas.height -140);
         dx = 1;
-        const enemy = new Enemy(x, y, dx);
+        const enemy = new Enemy(x, y, dx,30);
         elien.push(enemy);
         // elien.push(Enemy(x, y, dx));
     }, 1500);
 };
-function life(x, y,dx){
+function life(x, y){
     this.x = x;
     this.y = y;
-    this.dx = dx;
     this.draw = function(){
         context.beginPath();
-        context.arc(this.x,this.y, 5, 2 * Math.PI, false);
-        context.fillStyle = "green";
+        context.arc(this.x,this.y,10,2.5,2* Math.PI);
+        context.arc(this.x + 20,this.y,10,3,2.2* Math.PI);
+        context.moveTo(this.x + 10,this.y + 25);
+        context.lineTo(this.x - 8 ,this.y + 6 );
+        context.lineTo(this.x + 29, this.y + 6 );
+
+        context.fillStyle = "red";
         context.fill();
+        context.strokeStyle = "red";
+        context.stroke();
     }
 }
-const life1 = new life(30,50,0);
+const life1 = new life(40,70);
 //movement
 function move(x, y){
     this.x = x;
@@ -101,11 +109,6 @@ function move(x, y){
 }
 //stars
 const stars = [];
-// function Movedown(){
-//     setInterval(() =>{
-//         stars.push( new Star(300,100,1));
-//     }, 1500);
-// }
 function Star(x,y,dy){
     this.x = x;
     this.y = y;
@@ -113,8 +116,15 @@ function Star(x,y,dy){
     this.draw = function(){
         context.beginPath();
         context.moveTo(this.x,this.y);
-        context.lineTo(this.x +10,this.y +10);
+        context.lineTo(this.x +8,this.y +8);
+        context.moveTo(this.x + 8, this.y);
+        context.lineTo(this.x,this.y + 8);
+        context.moveTo(this.x + 4,this.y - 4);
+        context.lineTo(this.x + 4, this.y + 12);
+        context.moveTo(this.x - 4, this.y + 4);
+        context.lineTo(this.x + 12, this.y + 4);
         context.strokeStyle = 'white';
+        context.globalCompositeOperation = 'destination-over';
         context.stroke();
     }
     this.update = function(){
@@ -122,17 +132,16 @@ function Star(x,y,dy){
         this.draw();
     }
 }
-const star = new Star(300, 100,1);
+// const star = new Star(300, 100,1);
 // console.log(Star);
 function Movedown(){
     setInterval(() =>{
         x = Math.random() * canvas.width;
-        y = Math.random() * canvas.height;
+        y = 0;
         dy = 1;
-        // const fab = new Star(x, y,1);
         stars.push( new Star(x, y,dy));
         // console.log(x);
-    }, 1500);
+    }, 1000);
 };
 
 
@@ -192,11 +201,7 @@ function animate() {
     
      
 }
-// addEventListener('click', () =>{
-//     const ball = new Shooting(200, 290, 5);
-//     shoots.push(ball);
-//     // console.log(getdistance(ball.x, ball.y));
-// },false);
+
 document.getElementById("top").addEventListener('click',()=>{
     spaceship.y = spaceship.y - 30;
     spaceship.draw();
@@ -230,24 +235,24 @@ let timehrs=0;
 let displaysec=0;
 let displaymin=0;
 let displayhrs=0;
-let i = 0;
+let i = 1;
 
 startgame.addEventListener('click',() =>{
     timesec=0;
     timemin=0;
     timehrs=0;
     getscore=0;
-    //lifes 5 min
+    //lifes 1 min
     setInterval(() =>{
-        // alert("YOU HAVE GOT ONE LIFE :)");
+        alert("YOU HAVE GOT ONE LIFE :)");
         i ++;
-        x = 30+ (20 * i);
-        const lifes = new life(x,50,0);
+        x = (50 * i) - 10;
+        const lifes = new life(x,70);
         lives.push(lifes);
         // console.log(x);
         // console.log(getscore);
-    },300000);
-    //levels 10 min
+    },60000);
+    //levels 2 min
     setInterval(() => {
         alert("YOU HAVE REACHED NEXT LEVEL :)");
         elien.forEach((Enemy) =>{
@@ -255,14 +260,14 @@ startgame.addEventListener('click',() =>{
             Enemy.update();
             console.log(Enemy.dx); 
         })
-    },600000);
-    // points 15 min
+    },120000);
+    // points 3 min
     setInterval(() => {
         alert("BONUS POINTS('1000') :)");
         getscore = getscore + 1000;
         document.getElementById("getscore").innerHTML = getscore;
         
-    },900000);
+    },180000);
 
     setInterval(() => {
         timesec++;
@@ -300,6 +305,7 @@ startgame.addEventListener('click',() =>{
     cards.style.display ='none';
     animate();
     Elien();
+    Movedown();
     // console.log("go");
 });
 
